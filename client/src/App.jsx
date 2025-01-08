@@ -1,35 +1,82 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from 'react';
+import { useEffect } from 'react';
 import './styles/App.css'
+import InputFields from './components/InputField'
+import QuestionField from './components/QuestionField'
+import SubmitButton from './components/SubmitButton'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const [lowerNumber, setLowerNumber] = useState();  // Initialize as empty string
+  const [upperNumber, setUpperNumber] = useState();
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [score, setScore] = useState(0);
+  const [error, setError] = useState(null);
+
+  // Fetch question when component mounts
+  useEffect(() => {
+    fetchNewQuestion();
+  }, []);
+
+  const handleNumberChange = (type, newValue) => {
+    if (type === 'lower') {
+      setLowerNumber(newValue);
+    } else {
+      setUpperNumber(newValue);
+    }
+  };
+
+  const fetchNewQuestion = async () => {
+    try {
+      const response = await fetch('/api/questions');
+      const data = await response.json();
+      setCurrentQuestion(data);
+      setError(null);
+    } catch (error) {
+      setError('Failed to fetch question');
+    } 
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lowerBound: Number(lowerNumber),
+          upperBound: Number(upperNumber),
+          questionId: 1  
+        })
+      });
+
+      const result = await response.json();
+      setScore(result.correct ? "Correct!" : "Try again");
+    } catch (error) {
+      setError('Failed to submit answer');
+    } 
+  };
+
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <h1>4-σ</h1>
+      <QuestionField/> 
+      <InputFields
+        lowerValue={lowerNumber}
+        upperValue={upperNumber}
+        onValueChange={handleNumberChange}
+      />
+      
+      <SubmitButton 
+        onClick={handleSubmit}
+      />
+      <div>Score: {score}</div>
+    </div>
+  );
 }
 
 export default App
