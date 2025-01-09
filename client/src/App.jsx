@@ -44,6 +44,8 @@ function App() {
 
   const handleSubmit = async () => {
     try {
+
+      //Error handling
       console.log('Submitting answer for question:', {
         questionId: currentQuestion.id,
         questionText: currentQuestion.question,
@@ -53,6 +55,8 @@ function App() {
         lower: lowerNumber,
         upper: upperNumber
     });
+
+      //Fetching score from server
       const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
@@ -65,9 +69,17 @@ function App() {
         })
       });
 
+      //Receiving score and correctness from server
       const result = await response.json();
       console.log('Server response:', result);
-      setScore(result.correct ? "Correct!" : "Try again");
+
+      console.log(result.score)
+      console.log(result.correct)
+
+      if (result.correct) {
+      setScore(prevScore => prevScore + result.score)
+       } else setScore("Try again")
+
     } catch (error) {
       setError('Failed to submit answer');
     } 
