@@ -6,9 +6,16 @@ export function returnScore(req, res, next) {
 
     try {
       const {lowerBound, upperBound, questionId} = req.body;
-      console.log(lowerBound)
-
+      
+      console.log('Received submission:', {
+        questionId,
+        lowerBound,
+        upperBound
+      });
+  
       const question = questions.find(q => q.id === questionId);
+      console.log('Found question:', question);
+      console.log('Checking if', question.answer, 'is between', lowerBound, 'and', upperBound);
 
       let isCorrect = false
 
@@ -19,9 +26,10 @@ export function returnScore(req, res, next) {
       res.locals.score = {
         correct: isCorrect,
       }
-
     } catch (error) {
-      res.status(500).json({error: 'Error processing score'})
+      res.status(500).json({
+        message: 'Error processing score',
+        details: error.message
+      });
     }
-    next()
   }

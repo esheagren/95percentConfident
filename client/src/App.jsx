@@ -31,7 +31,11 @@ function App() {
     try {
       const response = await fetch('/api/questions');
       const data = await response.json();
+      console.log(data)
       setCurrentQuestion(data);
+      console.log(data)
+      console.log(currentQuestion)
+      console.log(currentQuestion)
       setError(null);
     } catch (error) {
       setError('Failed to fetch question');
@@ -40,6 +44,15 @@ function App() {
 
   const handleSubmit = async () => {
     try {
+      console.log('Submitting answer for question:', {
+        questionId: currentQuestion.id,
+        questionText: currentQuestion.question,
+        answer: currentQuestion.answer
+      });
+      console.log('Bounds:', {
+        lower: lowerNumber,
+        upper: upperNumber
+    });
       const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
@@ -48,11 +61,12 @@ function App() {
         body: JSON.stringify({
           lowerBound: Number(lowerNumber),
           upperBound: Number(upperNumber),
-          questionId: 1  
+          questionId: currentQuestion.id  
         })
       });
 
       const result = await response.json();
+      console.log('Server response:', result);
       setScore(result.correct ? "Correct!" : "Try again");
     } catch (error) {
       setError('Failed to submit answer');
@@ -64,7 +78,8 @@ function App() {
   return (
     <div>
       <h1>4-σ</h1>
-      <QuestionField/> 
+      <p>Provide your 95% confidence interval</p>
+      <QuestionField question={currentQuestion} /> 
       <InputFields
         lowerValue={lowerNumber}
         upperValue={upperNumber}

@@ -10,7 +10,8 @@ app.use(express.json());
 
 app.get('/api/questions', (req, res) => {
     try {
-        res.json(questions[0]); 
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        res.json(questions[randomIndex]); 
     } catch (error) {
         console.error('Error serving question:', error);
         res.status(500).json({ error: 'Failed to get question' });
