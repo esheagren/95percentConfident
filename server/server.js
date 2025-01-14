@@ -19,6 +19,7 @@ app.get('/api/questions', (req, res) => {
 });
 
 app.post('/api/submit', returnScore, (req, res) => {
+    console.log('Score:', res.locals.score);
     res.json(res.locals.score);
 });
 

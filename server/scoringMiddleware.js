@@ -18,14 +18,20 @@ export function returnScore(req, res, next) {
       console.log('Checking if', question.answer, 'is between', lowerBound, 'and', upperBound);
 
       let isCorrect = false
+      let score = 0
 
       if(question.answer >= lowerBound && question.answer <=upperBound){
         isCorrect = true
+        score = 1
       }
       
       res.locals.score = {
         correct: isCorrect,
+        score: score
       }
+      
+      next();
+      
     } catch (error) {
       res.status(500).json({
         message: 'Error processing score',
