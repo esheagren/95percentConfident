@@ -7,11 +7,27 @@ function InputFields({ lowerValue, upperValue, onValueChange} ) {
 
 
 function handleLowerChange(event) {
-    onValueChange("lower", event.target.value);
+    const newValue = Number(event.target.value);
+    if (upperValue && newValue > upperValue) {
+      // Show error state
+      event.target.setCustomValidity('Lower bound must be less than upper bound');
+      event.target.reportValidity();
+    } else {
+      event.target.setCustomValidity('');
+      onValueChange("lower", event.target.value);
+    }
   }
 
   function handleUpperChange(event) {
-    onValueChange("upper", event.target.value);
+    const newValue = Number(event.target.value);
+    if (lowerValue && newValue < lowerValue) {
+      // Show error state
+      event.target.setCustomValidity('Upper bound must be greater than lower bound');
+      event.target.reportValidity();
+    } else {
+      event.target.setCustomValidity('');
+      onValueChange("upper", event.target.value);
+    }
   }
 
 
@@ -37,8 +53,8 @@ function handleLowerChange(event) {
 
 InputFields.propTypes = {
   onValueChange: PropTypes.func.isRequired,
-  lowerValue: PropTypes.number.isRequired, 
-  upperValue: PropTypes.number.isRequired
+  lowerValue: PropTypes.number,
+  upperValue: PropTypes.number
 };
 
 export default InputFields;

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 
-function SubmitButton({ onClick }) {
+function SubmitButton({ onClick, disabled }) {
     return (
         <button 
             onClick={onClick}
-            className="submit-button"
+            disabled={disabled}
+            className={`submit-button ${disabled ? 'submit-button-disabled' : ''}`}
         >
             Submit Answer
         </button>
@@ -13,6 +14,7 @@ function SubmitButton({ onClick }) {
 
 SubmitButton.propTypes = {
     onClick: PropTypes.func.isRequired,
+    disabled: PropTypes.bool
 };
 
 export default SubmitButton;
