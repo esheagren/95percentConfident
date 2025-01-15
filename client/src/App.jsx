@@ -46,6 +46,19 @@ function App() {
 
   const handleSubmit = async () => {
     try {
+
+      //Error handling
+      console.log('Submitting answer for question:', {
+        questionId: currentQuestion.id,
+        questionText: currentQuestion.question,
+        answer: currentQuestion.answer
+      });
+      console.log('Bounds:', {
+        lower: lowerNumber,
+        upper: upperNumber
+    });
+
+      //Fetching score from server
       const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
@@ -58,30 +71,18 @@ function App() {
         })
       });
 
+      //Receiving score and correctness from server
       const result = await response.json();
-      
-      // Add current question to answered questions
-      setAnsweredQuestions(prev => [...prev, {
-        question: currentQuestion.question,
-        answer: currentQuestion.answer,
-        userLower: Number(lowerNumber),
-        userUpper: Number(upperNumber),
-        wasCorrect: result.correct
-      }]);
+      console.log('Server response:', result);
 
-      setScore(prevScore => prevScore + (result.correct ? 1 : 0));
-      setQuestionCount(prev => prev + 1);
+      console.log(result.score)
+      console.log(result.correct)
 
-      // Check if game is complete
-      if (questionCount + 1 >= totalQuestions) {
-        setIsGameComplete(true);
-      } else {
-        await fetchNewQuestion();
-        setLowerNumber('');
-        setUpperNumber('');
-      }
+      if (result.correct) {
+      setScore(prevScore => prevScore + result.score)
+       } else setScore("Try again")
 
-    } catch (_error) {
+    } catch (error) {
       setError('Failed to submit answer');
     }
   };
