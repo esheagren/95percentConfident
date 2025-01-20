@@ -1,4 +1,8 @@
+
+# Dependencies
 node_modules
+
+# Environment Variables
 .env
 *.env
 .env.local
@@ -6,3 +10,7 @@ node_modules
 # Firebase
 four-sigma2-firebase-adminsdk-fbsvc-38eee865ab.json
 *firebase-adminsdk*.json
+
+# Keep package.json and package-lock.json
+!package.json
+!package-lock.json
