@@ -1,7 +1,9 @@
 import express from 'express';
-import { db } from '../config/firebaseConfig.js';
+import { getFirestore } from 'firebase-admin/firestore';
 
 const router = express.Router();
+
+const db = getFirestore();
 
 router.post('/', async (req, res) => {
   try {
