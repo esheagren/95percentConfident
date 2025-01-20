@@ -123,7 +123,6 @@ function App() {
             onClick={handleSubmit} 
             disabled={!isValidBounds()}
           />
-          <div>Current Score: {score}</div>
         </>
       )}
     </div>
